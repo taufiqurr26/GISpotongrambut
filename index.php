@@ -60,7 +60,7 @@
             <!-- <li class="drop-down"><a href="detail/detailsekolah.php">Login</a>
               <ul>
                 <li><a href="#">Login</a></li> -->
-                <!-- <li class="drop-down"><a href="#">Drop Down 2</a>
+            <!-- <li class="drop-down"><a href="#">Drop Down 2</a>
                   <ul>
                     <li><a href="#">Deep Drop Down 1</a></li>
                     <li><a href="#">Deep Drop Down 2</a></li>
@@ -69,10 +69,10 @@
                     <li><a href="#">Deep Drop Down 5</a></li>
                   </ul>
                 </li> -->
-                <!-- <li><a href="#">Register</a></li> -->
-<!--                 <li><a href="#">Drop Down 4</a></li>
+            <!-- <li><a href="#">Register</a></li> -->
+            <!--                 <li><a href="#">Drop Down 4</a></li>
                 <li><a href="#">Drop Down 5</a></li> -->
-              <!-- </ul> -->
+            <!-- </ul> -->
             </li>
 
             <li class="get-started"><a href="#about">Mulai</a></li>
@@ -146,26 +146,26 @@
             <p>Clients</p>
           </div>
 
-            <?php
-            include_once "countsma.php";
-            $obj = json_decode($data);
-            $sman="";
-            foreach($obj->results as $item){
-              $sman.=$item->sma;
-             }
-            ?>
+          <?php
+          include_once "countsma.php";
+          $obj = json_decode($data);
+          $sman = "";
+          foreach ($obj->results as $item) {
+            $sman .= $item->sma;
+          }
+          ?>
           <div class="col-lg-3 col-6 text-center">
             <span data-toggle="counter-up"><?php echo $sman; ?></span>
             <p>BarberShop</p>
           </div>
           <?php
-            include_once "countsmk.php";
-            $obj2 = json_decode($data);
-            $smkn="";
-            foreach($obj2->results as $item2){
-              $smkn.=$item2->smk;
-             }
-            ?>
+          include_once "countsmk.php";
+          $obj2 = json_decode($data);
+          $smkn = "";
+          foreach ($obj2->results as $item2) {
+            $smkn .= $item2->smk;
+          }
+          ?>
           <div class="col-lg-3 col-6 text-center">
             <span data-toggle="counter-up"><?php echo $smkn; ?></span>
             <p>Biasa atau Madura</p>
@@ -192,92 +192,94 @@
     <!-- ======= Services Section ======= -->
     <section id="services" class="services section-bg">
       <div class="container">
-          <div class="text-center" data-aos="zoom-in">
-            <h3 style="font-weight: bold; text-transform: uppercase;">Peta</h3>
-          </div>
+        <div class="text-center" data-aos="zoom-in">
+          <h3 style="font-weight: bold; text-transform: uppercase;">Peta</h3>
+        </div>
         <div class="panel-body" style="align-content: center;">
           <div id="map" style="width:100%;height:480px;"></div>
-            <script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
+          <script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
 
-              <script type="text/javascript">
-                function initialize() {
-                  
-                  var mapOptions = {   
-                      zoom: 12.5,
-                      center: new google.maps.LatLng(-7.261184839447646, 112.74293031897085), 
-                      disableDefaultUI: false
-                  };
+          <script type="text/javascript">
+            function initialize() {
 
-                  var mapElement = document.getElementById('map');
+              var mapOptions = {
+                zoom: 12.5,
+                center: new google.maps.LatLng(-7.261184839447646, 112.74293031897085),
+                disableDefaultUI: false
+              };
 
-                  var map = new google.maps.Map(mapElement, mapOptions);
+              var mapElement = document.getElementById('map');
 
-                  setMarkers(map, officeLocations);
+              var map = new google.maps.Map(mapElement, mapOptions);
 
-              }
+              setMarkers(map, officeLocations);
 
-              var officeLocations = [
+            }
+
+            var officeLocations = [
               <?php
               $data = file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
-                              $no=1;
-                              if(json_decode($data,true)){
-                                $obj = json_decode($data);
-                                foreach($obj->results as $item){
+              $no = 1;
+              if (json_decode($data, true)) {
+                $obj = json_decode($data);
+                foreach ($obj->results as $item) {
+              ?>[<?php echo $item->id_instansi ?>, '<?php echo $item->nama_instansi ?>', '<?php echo $item->alamat ?>', <?php echo $item->longitude ?>, <?php echo $item->latitude ?>],
+              <?php
+                }
+              }
               ?>
-              [<?php echo $item->id_instansi ?>,'<?php echo $item->nama_instansi ?>','<?php echo $item->alamat ?>', <?php echo $item->longitude ?>, <?php echo $item->latitude ?>],
-              <?php 
+            ];
+
+            function setMarkers(map, locations) {
+              var globalPin = 'img/marker.png';
+
+              for (var i = 0; i < locations.length; i++) {
+
+                var office = locations[i];
+                var myLatLng = new google.maps.LatLng(office[4], office[3]);
+                var infowindow = new google.maps.InfoWindow({
+                  content: contentString
+                });
+
+                var contentString =
+                  '<div id="content">' +
+                  '<div id="siteNotice">' +
+                  '</div>' +
+                  '<h5 id="firstHeading" class="firstHeading">' + office[1] + '</h5>' +
+                  '<div id="bodyContent">' +
+                  '<a href=detail.php?id=' + office[0] + '>Info Detail</a>' +
+                  '</div>' +
+                  '</div>';
+
+                var marker = new google.maps.Marker({
+                  position: myLatLng,
+                  map: map,
+                  title: office[1],
+                  icon: 'img/marker.png'
+                });
+
+                google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
               }
-              } 
-              ?>    
-              ];
+            }
 
-              function setMarkers(map, locations)
-              {
-                  var globalPin = 'img/marker.png';
+            function getInfoCallback(map, content) {
+              var infowindow = new google.maps.InfoWindow({
+                content: content
+              });
+              return function() {
+                infowindow.setContent(content);
+                infowindow.open(map, this);
+              };
+            }
 
-                  for (var i = 0; i < locations.length; i++) {
-                     
-                      var office = locations[i];
-                      var myLatLng = new google.maps.LatLng(office[4], office[3]);
-                      var infowindow = new google.maps.InfoWindow({content: contentString});
-                       
-                      var contentString = 
-                          '<div id="content">'+
-                          '<div id="siteNotice">'+
-                          '</div>'+
-                          '<h5 id="firstHeading" class="firstHeading">'+ office[1] + '</h5>'+
-                          '<div id="bodyContent">'+ 
-                          '<a href=detail.php?id='+office[0]+'>Info Detail</a>'+
-                          '</div>'+
-                          '</div>';
-
-                      var marker = new google.maps.Marker({
-                          position: myLatLng,
-                          map: map,
-                          title: office[1],
-                          icon:'img/marker.png'
-                      });
-
-                      google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
-                  }
-              }
-
-              function getInfoCallback(map, content) {
-                  var infowindow = new google.maps.InfoWindow({content: content});
-                  return function() {
-                          infowindow.setContent(content); 
-                          infowindow.open(map, this);
-                      };
-              }
-
-              initialize();
-              </script>
-          </div>
+            initialize();
+          </script>
+        </div>
 
       </div>
     </section><!-- End Services Section -->
 
-        <!-- ======= Contact Section ======= -->
+    <!-- ======= Contact Section ======= -->
     <section id="portfolio" class="contact">
       <div class="container">
         <div class="row">
@@ -286,63 +288,77 @@
               <h2>Data Pangkas Rambut</h2>
               <p>Halaman ini memuat informasi tempat pangkas rambut di sekitar UIN Malang. </p>
             </div>
+            <h2>Pilih Kategori:</h2>
+
+            <form action="proses_form.php" method="post">
+              <label for="kategori">Kategori:</label>
+              <select name="kategori" id="kategori">
+                <option value="all">All</option>
+                <option value="biasa">Biasa</option>
+                <option value="mewah">Mewah</option>
+              </select>
+
+              <br>
+
+              <input type="submit" value="Submit">
+            </form>
           </div>
 
           <div class="col-lg-9" data-aos="fade-up" data-aos-delay="100">
 
             <div class="col-md-12">
-          <div class="panel panel-info panel-dashboard">
-            <div class="panel-heading centered">
-              <h2 class="panel-title"><strong> - <?php echo 'Informasi Pangkas Rambut' ?> - </strong></h2>
-            </div>
-            <div class="panel-body">
-              <table class="table table-bordered table-striped table-admin">
-              <thead>
-                <tr>
-                  <th width="5%">No.</th>
-                  <th width="30%">Nama Sekolah</th>
-                  <th width="10%">NPSN</th>
-                  <th width="30%">Alamat</th>
-                  <th width="20%">Website</th>
-                  <th width="20%">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-              <?php
-                $data = file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
-                $no=1;
-                if(json_decode($data,true)){
-                  $obj = json_decode($data);
-                  foreach($obj->results as $item){
-              ?>
-              <tr>
-                <td><?php echo $no; ?></td>
-                <td><?php echo $item->nama_instansi; ?></td>
-                <td><?php echo $item->NPSN; ?></td>
-                <td><?php echo $item->alamat; ?></td>
-                <td><a href="https://<?php echo $item->website; ?>" target="_blank"><?php echo $item->website; ?></a></td>
-                <td class="ctr">
-                  <div class="btn-group">
-                    <a href="detail.php?id=<?php echo $item->id_instansi; ?>" rel="tooltip" data-original-title="Lihat File" data-placement="top" class="btn btn-primary">
-                    <i class="fa fa-map-marker"> </i> Detail dan Lokasi</a>&nbsp;
-                  </div>
-                </td>
-              </tr>
-              <?php $no++; }}
+              <div class="panel panel-info panel-dashboard">
+                <div class="panel-heading centered">
+                  <h2 class="panel-title"><strong> - <?php echo 'Informasi Pangkas Rambut' ?> - </strong></h2>
+                </div>
+                <div class="panel-body">
+                  <table class="table table-bordered table-striped table-admin">
+                    <thead>
+                      <tr>
+                        <th width="5%">No.</th>
+                        <th width="30%">Nama Sekolah</th>
+                        <th width="10%">NPSN</th>
+                        <th width="30%">Alamat</th>
+                        <th width="20%">Website</th>
+                        <th width="20%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                      $data = file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
+                      $no = 1;
+                      if (json_decode($data, true)) {
+                        $obj = json_decode($data);
+                        foreach ($obj->results as $item) {
+                      ?>
+                          <tr>
+                            <td><?php echo $no; ?></td>
+                            <td><?php echo $item->nama_instansi; ?></td>
+                            <td><?php echo $item->NPSN; ?></td>
+                            <td><?php echo $item->alamat; ?></td>
+                            <td><a href="https://<?php echo $item->website; ?>" target="_blank"><?php echo $item->website; ?></a></td>
+                            <td class="ctr">
+                              <div class="btn-group">
+                                <a href="detail.php?id=<?php echo $item->id_instansi; ?>" rel="tooltip" data-original-title="Lihat File" data-placement="top" class="btn btn-primary">
+                                  <i class="fa fa-map-marker"> </i> Detail dan Lokasi</a>&nbsp;
+                              </div>
+                            </td>
+                          </tr>
+                      <?php $no++;
+                        }
+                      } else {
+                        echo "data tidak ada.";
+                      } ?>
 
-              else{
-                echo "data tidak ada.";
-                } ?>
-              
-              </tbody>
-            </table>
-            </div>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-          </div>
-        </div>
+      </div>
 
       </div>
     </section><!-- End Contact Section -->
