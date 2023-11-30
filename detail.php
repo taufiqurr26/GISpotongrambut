@@ -1,82 +1,9 @@
-<?php 
-$id = $_GET['id'];
-include_once "ambildata_id.php";
-$obj = json_decode($data);
-$titles="";
-$ids="";
-$kat="";
-$web="";
-$hp="";
-$alamat="";
-$kota="";
-$prov="";
-$lat="";
-$long="";
-foreach($obj->results as $item){
-  $titles.=$item->nama_instansi;
-  $ids.=$item->id_instansi;
-  $kat.=$item->NPSN;
-  $web.=$item->website;
-  $hp.=$item->no_telepon;
-  $alamat.=$item->alamat;
-  $kota.=$item->kota;
-  $prov.=$item->provinsi;
-  $lat.=$item->latitude;
-  $long.=$item->longitude;
-}
-
-$title = "Detail dan Lokasi : ".$titles;
-//include_once "header.php"; ?>
-
-<script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
-
-<script>
-
-function initialize() {
-  var myLatlng = new google.maps.LatLng(<?php echo $lat ?>,<?php echo $long ?>);
-  var mapOptions = {
-    zoom: 13,
-    center: myLatlng
-  };
-
-  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-  var contentString = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading"><?php echo $titles ?></h1>'+
-      '<div id="bodyContent">'+
-      '<p><?php echo $alamat ?></p>'+
-      '</div>'+
-      '</div>';
-
-  var infowindow = new google.maps.InfoWindow({
-      content: contentString
-  });
-
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      title: 'Maps Info',
-      icon:'img/marker.png'
-  });
-  google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(map,marker);
-  });
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-
-    </script>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>SIG SMAN</title>
+  <title>SIG Pangkasrambut</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -100,14 +27,72 @@ google.maps.event.addDomListener(window, 'load', initialize);
   <link href="assets/css/style.css" rel="stylesheet">
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <!-- =======================================================
-  * Template Name: Bethany - v2.2.0
-  * Template URL: https://bootstrapmade.com/bethany-free-onepage-bootstrap-theme/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
+<body>
 
+<div class="container">
+    <?php
+    include "koneksi.php";
+
+    $idPotongrambut = isset($_GET['id_potongrambut']) ? $_GET['id_potongrambut'] : die('Parameter ID tidak ditemukan.');
+
+    $query = "SELECT * FROM potongrambut WHERE id_potongrambut = " . mysqli_real_escape_string($koneksi, $idPotongrambut);
+    $result = mysqli_query($koneksi, $query);
+
+    if ($result) {
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            // echo '<div id="map-canvas"></div>';
+        } else {
+            echo "Data tidak ditemukan.";
+        }
+    } else {
+        echo "Error: " . mysqli_error($koneksi);
+    }
+
+    mysqli_close($koneksi);
+    ?>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
+
+<script>
+function initialize() {
+    var myLatlng = new google.maps.LatLng(<?php echo $row['latitude']; ?>, <?php echo $row['longitude']; ?>);
+    var mapOptions = {
+        zoom: 13,
+        center: myLatlng
+    };
+
+    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    var contentString = '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<h1 id="firstHeading" class="firstHeading"><?php echo $row['nama']; ?></h1>'+
+        '<div id="bodyContent">'+
+        '<p><?php echo $row['alamat']; ?></p>'+
+        '</div>'+
+        '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
+    });
+
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title: 'Maps Info',
+        icon: 'img/marker.png'
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker);
+    });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 <body>
 
   <!-- ======= Header ======= -->
@@ -122,7 +107,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
         <nav class="nav-menu d-none d-lg-block">
           <ul>
-            <li class="active"><a href="index.php">Home</a></li>
+            <!-- <li class="active"><a href="index.php">Home</a></li> -->
             <!--<li><a href="#about">About</a></li>
             <li><a href="#services">Maps</a></li> -->
             <!-- <li><a href="#portfolio">Portfolio</a></li>
@@ -159,7 +144,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <div class="col-md-7" data-aos="fade-up" data-aos-delay="200">
           <div class="panel panel-info panel-dashboard">
             <div class="panel-heading centered">
-              <h2 class="panel-title"><strong>Informasi Instansi </strong></h4>
+              <h2 class="panel-title"><strong>Informasi Pangkas</strong></h4>
             </div>
             <div class="panel-body">
              <table class="table">
@@ -168,28 +153,20 @@ google.maps.event.addDomListener(window, 'load', initialize);
                  <th>Detail</th>
                </tr>
                <tr>
-                 <td>Nama Sekolah</td>
-                 <td><h5><?php echo $titles ?></h5></td>
-               </tr>
-               <tr>
-                 <td>Lokasi</td>
-                 <td><h5><?php echo $kota ?></h5></td>
-               </tr>
-               <tr>
-                 <td>Provinsi</td>
-                 <td><h5><?php echo $prov ?></h5></td>
+                 <td>Nama</td>
+                 <td><h5><?php echo $row['nama']; ?></h5></td>
                </tr>
                <tr>
                  <td>Alamat</td>
-                 <td><h5><?php echo $alamat ?></h5></td>
+                 <td><h5><?php echo $row['alamat']; ?></h5></td>
                </tr>
                <tr>
-                 <td>No HP</td>
-                 <td><h5><?php echo $hp ?></h5></td>
+                 <td>Sosial Media</td>
+                 <td><h5><?php echo $row['sos_med']; ?></h5></td>
                </tr>
                <tr>
-                 <td>Website</td>
-                 <td><h5><a href="http://<?php echo $web ?>"><?php echo $web ?></a></h5></td>
+                 <td>Harga</td>
+                 <td><h5><?php echo $row['harga']; ?></h5></td>
                </tr>
              </table>
             </div>
@@ -243,8 +220,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
           <div class="col-lg-3 col-md-6 footer-links">
             <h4>Data</h4>
             <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">SMA Negeri</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">SMK Negeri</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">biasa</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">mewah</a></li>
               <!-- <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li> -->
@@ -267,7 +244,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
       <div class="mr-md-auto text-center text-md-left">
         <div class="copyright">
-          &copy; Copyright <strong><span>SIG SMA&SMK</span></strong>.
+          &copy; Copyright <strong><span>SIG pangkasrambut</span></strong>.
         </div>
         <div class="credits">
           <!-- All the links in the footer should remain intact. -->
@@ -310,6 +287,5 @@ google.maps.event.addDomListener(window, 'load', initialize);
   <script src="js/datatable-bootstrap.js"></script>
 
 </body>
-
 </html>
 <!--     <?php include_once "footer.php"; ?> -->

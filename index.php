@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>SIG SEKOLAH</title>
+  <title>SIG Pangkas Rambut</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -151,7 +151,7 @@
           $obj = json_decode($data);
           $sman = "";
           foreach ($obj->results as $item) {
-            $sman .= $item->sma;
+            $sman .= $item->mewah;
           }
           ?>
           <div class="col-lg-3 col-6 text-center">
@@ -163,7 +163,7 @@
           $obj2 = json_decode($data);
           $smkn = "";
           foreach ($obj2->results as $item2) {
-            $smkn .= $item2->smk;
+            $smkn .= $item2->biasa;
           }
           ?>
           <div class="col-lg-3 col-6 text-center">
@@ -196,172 +196,202 @@
           <h3 style="font-weight: bold; text-transform: uppercase;">Peta</h3>
         </div>
         <div class="panel-body" style="align-content: center;">
-          <div id="map" style="width:100%;height:480px;"></div>
-          <script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
+            <div id="map" style="width:100%;height:750px;"></div>
+            <script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
 
-          <script type="text/javascript">
-            function initialize() {
+            <script type="text/javascript">
+                function initialize() {
 
-              var mapOptions = {
-                zoom: 12.5,
-                center: new google.maps.LatLng(-7.261184839447646, 112.74293031897085),
-                disableDefaultUI: false
-              };
+                    var mapOptions = {
+                        zoom: 16,
+                        center: new google.maps.LatLng(-7.9509356, 112.6077202),
+                        disableDefaultUI: false
+                    };
 
-              var mapElement = document.getElementById('map');
+                    var mapElement = document.getElementById('map');
 
-              var map = new google.maps.Map(mapElement, mapOptions);
+                    var map = new google.maps.Map(mapElement, mapOptions);
 
-              setMarkers(map, officeLocations);
+                    setMarkers(map, officeLocations);
 
-            }
-
-            var officeLocations = [
-              <?php
-              $data = file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
-              $no = 1;
-              if (json_decode($data, true)) {
-                $obj = json_decode($data);
-                foreach ($obj->results as $item) {
-              ?>[<?php echo $item->id_instansi ?>, '<?php echo $item->nama_instansi ?>', '<?php echo $item->alamat ?>', <?php echo $item->longitude ?>, <?php echo $item->latitude ?>],
-              <?php
                 }
-              }
-              ?>
-            ];
 
-            function setMarkers(map, locations) {
-              var globalPin = 'img/marker.png';
+                var officeLocations = [
+                    <?php file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
+                    ?>
+                ];
 
-              for (var i = 0; i < locations.length; i++) {
+                function setMarkers(map, locations) {
+                    var globalPin = 'img/marker.png';
 
-                var office = locations[i];
-                var myLatLng = new google.maps.LatLng(office[4], office[3]);
-                var infowindow = new google.maps.InfoWindow({
-                  content: contentString
-                });
+                    for (var i = 0; i < locations.length; i++) {
 
-                var contentString =
-                  '<div id="content">' +
-                  '<div id="siteNotice">' +
-                  '</div>' +
-                  '<h5 id="firstHeading" class="firstHeading">' + office[1] + '</h5>' +
-                  '<div id="bodyContent">' +
-                  '<a href=detail.php?id=' + office[0] + '>Info Detail</a>' +
-                  '</div>' +
-                  '</div>';
+                        var office = locations[i];
+                        var myLatLng = new google.maps.LatLng(office[13], office[5]);
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
 
-                var marker = new google.maps.Marker({
-                  position: myLatLng,
-                  map: map,
-                  title: office[1],
-                  icon: 'img/marker.png'
-                });
+                        var contentString =
+                            '<div id="content">' +
+                            '<div id="siteNotice">' +
+                            '</div>' +
+                            '<h5 id="firstHeading" class="firstHeading">' + office[1] + '</h5>' +
+                            '<div id="bodyContent">' +
+                            '<a href="detail.php?id=' + office[0] + '">Info Detail</a>' +
+                            '</div>' +
+                            '</div>';
 
-                google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
-              }
-            }
+                        var marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            title: office[1],
+                            icon: 'img/marker.png'
+                        });
 
-            function getInfoCallback(map, content) {
-              var infowindow = new google.maps.InfoWindow({
-                content: content
-              });
-              return function() {
-                infowindow.setContent(content);
-                infowindow.open(map, this);
-              };
-            }
+                        google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
+                    }
+                }
 
-            initialize();
-          </script>
+                function getInfoCallback(map, content) {
+                    var infowindow = new google.maps.InfoWindow({
+                        content: content
+                    });
+                    return function () {
+                        infowindow.setContent(content);
+                        infowindow.open(map, this);
+                    };
+                }
+
+                initialize();
+            </script>
         </div>
+
 
       </div>
     </section><!-- End Services Section -->
 
-    <!-- ======= Contact Section ======= -->
     <section id="portfolio" class="contact">
-      <div class="container">
+    <div class="container">
         <div class="row">
-          <div class="col-lg-3" data-aos="fade-right">
-            <div class="section-title">
-              <h2>Data Pangkas Rambut</h2>
-              <p>Halaman ini memuat informasi tempat pangkas rambut di sekitar UIN Malang. </p>
-            </div>
-            <h2>Pilih Kategori:</h2>
-
-            <form action="proses_form.php" method="post">
-              <label for="kategori">Kategori:</label>
-              <select name="kategori" id="kategori">
-                <option value="all">All</option>
-                <option value="biasa">Biasa</option>
-                <option value="mewah">Mewah</option>
-              </select>
-
-              <br>
-
-              <input type="submit" value="Submit">
-            </form>
-          </div>
-
-          <div class="col-lg-9" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="col-md-12">
-              <div class="panel panel-info panel-dashboard">
-                <div class="panel-heading centered">
-                  <h2 class="panel-title"><strong> - <?php echo 'Informasi Pangkas Rambut' ?> - </strong></h2>
+            <div class="col-lg-3" data-aos="fade-right">
+                <div class="section-title">
+                    <h2>Data Pangkas Rambut</h2>
+                    <p>Halaman ini memuat informasi tempat pangkas rambut di sekitar UIN Malang.</p>
                 </div>
-                <div class="panel-body">
-                  <table class="table table-bordered table-striped table-admin">
-                    <thead>
-                      <tr>
-                        <th width="5%">No.</th>
-                        <th width="30%">Nama Sekolah</th>
-                        <th width="10%">NPSN</th>
-                        <th width="30%">Alamat</th>
-                        <th width="20%">Website</th>
-                        <th width="20%">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php
-                      $data = file_get_contents('http://localhost/sig-sma/sig-sma/ambildata.php');
-                      $no = 1;
-                      if (json_decode($data, true)) {
-                        $obj = json_decode($data);
-                        foreach ($obj->results as $item) {
-                      ?>
-                          <tr>
-                            <td><?php echo $no; ?></td>
-                            <td><?php echo $item->nama_instansi; ?></td>
-                            <td><?php echo $item->NPSN; ?></td>
-                            <td><?php echo $item->alamat; ?></td>
-                            <td><a href="https://<?php echo $item->website; ?>" target="_blank"><?php echo $item->website; ?></a></td>
-                            <td class="ctr">
-                              <div class="btn-group">
-                                <a href="detail.php?id=<?php echo $item->id_instansi; ?>" rel="tooltip" data-original-title="Lihat File" data-placement="top" class="btn btn-primary">
-                                  <i class="fa fa-map-marker"> </i> Detail dan Lokasi</a>&nbsp;
-                              </div>
-                            </td>
-                          </tr>
-                      <?php $no++;
-                        }
-                      } else {
-                        echo "data tidak ada.";
-                      } ?>
+                <h2>Pilih Kategori:</h2>
 
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                <form action="" method="post">
+                    <label for="kategori">Kategori:</label>
+                    <select name="kategori" id="kategori">
+                        <option value="all">All</option>
+                        <option value="biasa">Biasa</option>
+                        <option value="mewah">Mewah</option>
+                    </select>
+
+                    <br>
+
+                    <input type="submit" value="Submit">
+                </form>
             </div>
-          </div>
+
+            <div class="col-lg-9" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="col-md-12">
+                    <div class="panel panel-info panel-dashboard">
+                        <div class="panel-heading centered">
+                            <h2 class="panel-title"><strong> - <?php echo 'Informasi Pangkas Rambut' ?> - </strong></h2>
+                        </div>
+                        <div class="panel-body">
+                            <?php
+                            include "koneksi.php";
+
+                            // Perbarui query berdasarkan kategori yang dipilih
+                            $query = "SELECT 
+                                    potongrambut.id_potongrambut, potongrambut.nama, potongrambut.alamat, potongrambut.sos_med, potongrambut.harga,
+                                    kategori.tipe,
+                                    jadwal.jam_buka, jadwal.jam_tutup
+                                FROM potongrambut
+                                LEFT JOIN kategori ON potongrambut.id_kategori = kategori.id_kategori
+                                LEFT JOIN jadwal ON potongrambut.id_jadwal = jadwal.id_jadwal";
+
+                            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                                // Dapatkan nilai kategori yang dipilih
+                                $selectedCategory = $_POST["kategori"];
+
+                                if ($selectedCategory != "all") {
+                                    $query .= " WHERE kategori.tipe = '$selectedCategory'";
+                                }
+                            }
+
+                            $result = mysqli_query($koneksi, $query);
+
+                            if ($result) {
+                                if (mysqli_num_rows($result) > 0) {
+                                    echo "<table class='table table-bordered table-striped'>
+                                            <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Nama</th>
+                                                    <th>Alamat</th>
+                                                    <th>Social Media</th>
+                                                    <th>Harga</th>
+                                                    <th>Tipe</th>
+                                                    <th>Jam Buka</th>
+                                                    <th>Jam Tutup</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>";
+                                    $no = 1;
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<tr>
+                                                <td>" . $no . "</td>
+                                                <td>" . $row["nama"] . "</td>
+                                                <td>" . $row["alamat"] . "</td>
+                                                <td>" . $row["sos_med"] . "</td>
+                                                <td>" . $row["harga"] . "</td>
+                                                <td>" . $row["tipe"] . "</td>
+                                                <td>" . $row["jam_buka"] . "</td>
+                                                <td>" . $row["jam_tutup"] . "</td>
+                                                <td>
+                                                    <button onclick=\"showPopup('" . $row["tipe"] . "', '" . $row["id_potongrambut"] . "')\">Detail dan Lokasi</button>
+                                                </td>
+                                            </tr>";
+                                            $no++;
+                                    }
+
+                                    echo "</tbody></table>";
+                                } else {
+                                    echo "Tidak ada data.";
+                                }
+                            } else {
+                                echo "Error: " . mysqli_error($koneksi);
+                            }
+
+                            // Tutup koneksi
+                            mysqli_close($koneksi);
+                            ?>
+                            <script>
+                                function showPopup(tipe, idPotongrambut) {
+                                    var popupMessage = (tipe === 'mewah') ? 'HARGA MAHAL' : 'HARGA MURAH';
+                                    alert(popupMessage);
+                                    myFunction(idPotongrambut);
+                                }
+
+                                function myFunction(idPotongrambut) {
+                                    // Redirect ke halaman detail dengan mengirimkan parameter id_potongrambut
+                                    window.location.href = "detail.php?id_potongrambut=" + encodeURIComponent(idPotongrambut);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      </div>
+    </div>
+</section><!-- End Contact Section -->
 
-      </div>
-    </section><!-- End Contact Section -->
 
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact">
@@ -378,21 +408,38 @@
             <div class="row">
               <div class="col-lg-6 mt-4">
                 <div class="info">
-                  <i class="icofont-envelope"></i>
-                  <h4>Email:</h4>
-                  <p>info@sigsma.com</p>
+                  <h4>IKI CONTOH E, TERUSKAN Y GESS</h4>
+                  <img src="img/logo-SMA.png" alt="lahfjdshfks">
                 </div>
               </div>
               <div class="col-lg-6">
                 <div class="info w-100 mt-4">
-                  <i class="icofont-phone"></i>
-                  <h4>Telepon:</h4>
-                  <p>+62 895 0987 6543</p>
+                  <h4>LANJUTKAN TEMAN</h4>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-4">
+                <div class="info">
+                  <h4>IKI CONTOH E, TERUSKAN Y GESS</h4>
+                  <img src="img/logo-SMA.png" alt="lahfjdshfks">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="info w-100 mt-4">
+                  <h4>LANJUTKAN TEMAN</h4>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-4">
+                <div class="info">
+                  <h4>IKI CONTOH E, TERUSKAN Y GESS</h4>
+                  <img src="img/logo-SMA.png" alt="lahfjdshfks">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="info w-100 mt-4">
+                  <h4>LANJUTKAN TEMAN</h4>
                 </div>
               </div>
             </div>
-
-            <!-- <form action="forms/contact.php" method="post" role="form" class="php-email-form mt-4"></form> -->
           </div>
         </div>
 

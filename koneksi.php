@@ -1,8 +1,8 @@
 <?php
-$host = "127.0.0.1";
+$host = "localhost";
 $username = "root";
 $password = "";
-$database = "sekolah";
+$database = "gis";
 
 $koneksi = mysqli_connect($host, $username, $password, $database);
  if (mysqli_connect_errno()){

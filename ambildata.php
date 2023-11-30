@@ -1,18 +1,23 @@
 <?php
 include "koneksi.php";
-$Q = mysqli_query($koneksi, "SELECT * FROM sekolah");
 
-if($Q) {
-    $posts = array();
-    if(mysqli_num_rows($Q)) {
-        while($post = mysqli_fetch_assoc($Q)) {
-            $posts[] = $post;
-        }
-    }  
-    $data = json_encode(array('results'=>$posts));
+$posts = array();
+
+$query = "SELECT * FROM potongrambut";
+$result = mysqli_query($koneksi, $query);
+
+if ($result) {
+    while ($post = mysqli_fetch_assoc($result)) {
+        $posts[] = $post;
+    }
+    $data = json_encode(array('results' => $posts));
+    header('Content-Type: application/json');
     echo $data;
 } else {
-    // Menangani kesalahan jika terjadi
-    echo "Error: " . mysqli_error($koneksi);
+    // Tangani kesalahan jika query tidak berhasil
+    $error = array('error' => 'Query tidak berhasil.');
+    echo json_encode($error);
 }
+
+mysqli_close($koneksi);
 ?>

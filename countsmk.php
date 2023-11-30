@@ -1,6 +1,6 @@
 <?php
 include "koneksi.php";
-$Q = mysqli_query($koneksi, "select count(nama_instansi) as smk FROM `sekolah` WHERE nama_instansi LIKE 'SMK%'")or die(mysqli_error());
+$Q = mysqli_query($koneksi, "select count(tipe) as biasa FROM `kategori` WHERE tipe LIKE 'biasa%'");
 if($Q){
  $posts = array();
       if(mysqli_num_rows($Q))
